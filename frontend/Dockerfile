@@ -1,0 +1,22 @@
+FROM node:18
+WORKDIR /app
+
+COPY package.json package.json
+COPY package-lock.json package-lock.json
+
+RUN npm install
+
+COPY package*.json ./
+
+# 2. Устанавливаем зависимости
+RUN npm install
+
+# 3. Копируем остальные файлы
+COPY . .
+
+# 4. Собираем проект
+RUN npm run build
+
+# Эта команда запустит встроенный сервер на Node.js, который будет раздавать
+# содержимое директории /app/build на порте 8000
+CMD ["npx", "-y", "http-server", "-p", "8000", "/app/build"]
